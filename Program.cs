@@ -1,20 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-
+﻿using System.Threading;
+using static System.Console;
+using static System.Threading.Thread;
 namespace AddWithThreads
 {
     class Program
     {
-        private static AutoResetEvent waitHandle = new AutoResetEvent(false);
+        private static readonly AutoResetEvent waitHandle = new AutoResetEvent(false);
 
-        static void Main(string[] args)
+        static void Main()
         {
-            Console.WriteLine("***** Adding with Thread objects *****");
-            Console.WriteLine("ID of thread in Main(): {0}",
-              Thread.CurrentThread.ManagedThreadId);
+            WriteLine("***** Adding with Thread objects *****");
+            WriteLine($"ID of thread in Main(): {CurrentThread.ManagedThreadId}");
 
             AddParams ap = new AddParams(10, 10);
             Thread t = new Thread(new ParameterizedThreadStart(Add));
@@ -23,20 +19,18 @@ namespace AddWithThreads
             // Wait here until you are notified         
             waitHandle.WaitOne();
 
-            Console.WriteLine("Other thread is done!");
-            Console.ReadLine();
+            WriteLine("Other thread is done!");
+            ReadLine();
         }
 
         static void Add(object data)
         {
             if (data is AddParams)
             {
-                Console.WriteLine("ID of thread in Add(): {0}",
-                  Thread.CurrentThread.ManagedThreadId);
+                WriteLine($"ID of thread in Add(): {CurrentThread.ManagedThreadId}");
 
                 AddParams ap = (AddParams)data;
-                Console.WriteLine("{0} + {1} is {2}",
-                  ap.a, ap.b, ap.a + ap.b);
+                WriteLine($"{ap.a} + {ap.b} is {ap.a + ap.b}");
 
                 // Tell other thread we are done.
                 waitHandle.Set();
